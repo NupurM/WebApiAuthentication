@@ -3,10 +3,12 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using EmployeeDataAccess;
 
 namespace EmployeeService.Controllers
 {
+    [EnableCors("*","*","*")]
     public class EmployeesController : ApiController
     {
         [BasicAuthentication]

@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ulEmployees = $('#ulemployees');
+
+            $('#btn').click(function () {
+                var username = $('#txtUsername').val();
+                var password = $('#txtPassword').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:51483/api/employees',
+                    dataType: 'json',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                    },
+                    success: function (data) {
+                        ulEmployees.empty();
+                        $.each(data,
+                            function (index, val) {
+                                var fullName = val.FirstName + ' ' + val.LastName;
+                                ulEmployees.append('<li>' + fullName + ' (' + val.Gender + ')' + '</li>');
+                            });
+                    },
+                    complete: function (jqXhr) {
+                        if (jqXhr.status == '401') {
+                            ulEmployees.empty();
+                            ulEmployees.append('<li style="color:red">' + jqXhr.status + ' : ' + jqXhr.statusText + '</li>');
+                        }
+                    }
+                });
+            });
+        });
+
+        function clearAll() {
+            var ulEmployees = $('#ulemployees');
+            ulEmployees.empty();
+        }
+    </script>
+</head>
+<body>
+    username: <input type="text" id="txtUsername" placeholder="male" />
+    <br />
+    <br />
+    password: <input type="password" id="txtPassword" />
+    <br />
+    <br />
+    <button id="btn">Authenticate and get employees</button>
+    <button id="btnClear" onclick="clearAll()">Clear</button>
+    <ul id="ulemployees"></ul>
+</body>
+</html>
